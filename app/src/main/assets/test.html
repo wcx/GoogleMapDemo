@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+        <meta charset="utf-8">
+       <style>
+        html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+        }
+        #map {
+        height: 100%;
+        }
+       </style>
+</head>
+<body>
+<div id="map"></div>
+<script>
+      // Initialize the map.
+      function initMap() {
+         //地图参数
+        var mapOptions = {
+                    zoom: 15,//缩放
+                    center: {lat: 40.72, lng: -73.96},//位置
+                    mapTypeControl: false,//地图类型控制是否显示
+                    streetViewControl: false,//街景是否显示
+                    zoomControl:false,//缩放控制是否显示
+                    mapTypeId: google.maps.MapTypeId.ROADMAP//地图类型
+                  };
+        //初始化地图
+        var map = new google.maps.Map(document.getElementById('map'),
+                                 mapOptions);
+
+         geocodeAddress(map);
+
+      }
+      //解析地址，并再地图上标出
+      function geocodeAddress(map) {
+        var geocoder = new google.maps.Geocoder;//地址解析
+        var infowindow = new google.maps.InfoWindow;//显示地址的窗口
+        // var address = nan.getAddress();
+        var address ="北京市北京化工大学"；
+        geocoder.geocode({'address': address}, function(results, status) {
+          if (status === google.maps.GeocoderStatus.OK) {
+            if (results[0]) {
+              map.setZoom(15);
+              map.setCenter(results[0].geometry.location);
+              //设置地图标记
+              var marker = new google.maps.Marker({
+                icon: {
+                    path: google.maps.SymbolPath.BACKWARD_CLOSED_ARROW,
+                    scale: 5
+                },
+                map: map,
+                position: results[0].geometry.location,
+                draggable: true
+              });
+              //信息窗口
+              infowindow.setContent(results[0].formatted_address);
+              infowindow.open(map, marker);
+            } else {
+              window.alert('No results found');
+            }
+          } else {
+            window.alert('Geocoder failed due to: ' + status);
+          }
+        });
+      }
+    </script>
+
+<script async defer
+        src="https://maps.googleapis.com/maps/api/js?key="+"AIzaSyAVXvrq0T-SW0ky2RJxrW9kJcyOZXfFl3E"+"&callback=initMap">
+</script>
+</body>
+</html>
